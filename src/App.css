@@ -1,42 +1,152 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+body{
+    margin: 0px;
   }
-  to {
-    transform: rotate(360deg);
+  
+  
+  .list-page > div:first-child {
+    min-height: 30px;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  
+  .list-page > div:first-child > div {
+    padding-top: 8px;
+    min-height: 20px;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
+  
+  #react-admin-title {
+    margin-left: 1em;
+  }
+  
+  .filter-field{
+    width: 100%;
+  }
+  
+  .MuiCardContent-root:first-child {
+    padding-top: 24px !important;
+  }
+  
+  .MuiCardContent-root:last-child {
+    padding-bottom: 16px !important;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+  }
+  
+  label {
+    padding-bottom: 8px;
+    font-size: 16px;
+  }
+  
+  input,
+  select {
+    padding: 16px 24px;
+    outline: none;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: none;
+    border: 2px solid rgba(14, 13, 13, 0.133);
+    transition: 0.3s ease-in-out;
+    font-size: 18px;
+  }
+  
+  input:focus {
+    border: 2px solid #2b4b5a;
+  }
+  
+  select:focus {
+    border: 2px solid #2b4b5a;
+  }
+  
+  .EventList input:focus, .EventList select:focus {
+    border: 0px !important;
+  }
+  
+  button {
+    padding: 16px 24px;
+    outline: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 16px;
+    color: white;
+    border: none;
+    background-color: #2b4b5a;
+    transition: 0.3s ease-in-out;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  .divisor {
+    width: auto;
+    height: 1px;
+    background: #2b4b5a;
+  }
+  
+  .panel {
+    background-color: #2b4b5a;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 24px;
+    box-shadow: 0px 2px 4px #888888;
+  }
+  
+  .panel a {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .panel a img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    padding: 4px;
+  }
+  
+  .input-custom input:focus {
+    border: none !important;
+  }
+  
+  .panel a p {
+    padding-left: 16px;
+    color: white;
+  }
+  
+  .MuiAvatar-root{
+    /* display: none !important; */
+  }
+  
+  .EventShow .MuiToolbar-root{
+    padding-top: 0px !important;
+  }
+  
+  .MuiTablePagination-toolbar{
+    /* display: none !important; */
+  }
+  
+  .EventList div + div{
+    min-width: 210px;
+  }
+  
+  .EventList .filter-field{
+    min-width: auto;
+  }
+  
+  .space {
+    display: block;
+    width: 100%;
+    height: 5px;
+  }

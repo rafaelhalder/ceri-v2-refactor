@@ -1,34 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { Admin, Resource } from "react-admin";
+import "./App.css";
+import { theme } from "./core/theme/theme";
+import { Layout } from "./core/layout/Layout";
+import LoginPage from "./core/pages/Login";
+import { firebaseConfig as config } from "./FIREBASE_CONFIG";
+import {
+  FirebaseAuthProvider,
+  FirebaseDataProvider,
+} from 'react-admin-firebase';
+import {i18nProvider} from './core/providers/i18nProvider';
+import EventList  from "./modules/ceremonies/CeremoniesList";
+import { EventShow } from "./modules/ceremonies/CerimoniesShow";
 
-function App() {
-  const [count, setCount] = useState(0)
+const options = { logging: true, rootRef: "/" };
+const dataProvider = FirebaseDataProvider(config, options);
+const authProvider = FirebaseAuthProvider(config, options);
 
+const App = () => {
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <Admin
+      title={"Cerimonial - Governo do Estado do Paraná"}
+      theme={theme}
+      layout={Layout}
+      loginPage={LoginPage}
+      i18nProvider={i18nProvider}
+      dataProvider={dataProvider}
+      authProvider={authProvider}
+    >
+
+      <Resource
+        name="eventos"
+        options={{ label: "Cerimônias" }}
+        list={EventList}
+        show={EventShow}
+        hasCreate={false}
+        hasEdit={false}
+      />
+      
+    </Admin>
+  );
 }
 
-export default App
+export default App;
