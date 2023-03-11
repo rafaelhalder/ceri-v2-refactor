@@ -1,4 +1,4 @@
-import { Admin, Resource } from "react-admin";
+import { Admin, CustomRoutes, Resource, Sidebar } from "react-admin";
 import "./App.css";
 import { theme } from "./core/theme/theme";
 import { Layout } from "./core/layout/Layout";
@@ -7,10 +7,14 @@ import { firebaseConfig as config } from "./FIREBASE_CONFIG";
 import {
   FirebaseAuthProvider,
   FirebaseDataProvider,
-} from 'react-admin-firebase';
-import {i18nProvider} from './core/providers/i18nProvider';
-import EventList  from "./modules/ceremonies/CeremoniesList";
+} from "react-admin-firebase";
+import { i18nProvider } from "./core/providers/i18nProvider";
+import EventList from "./modules/ceremonies/CeremoniesList";
 import { EventShow } from "./modules/ceremonies/CerimoniesShow";
+import LabelIcon from '@mui/icons-material/Label';
+import { Route } from "react-router-dom";
+import AuthoritiesRouteLayout from "./modules/authorities/Authorities";
+
 
 const options = { logging: true, rootRef: "/" };
 const dataProvider = FirebaseDataProvider(config, options);
@@ -23,11 +27,10 @@ const App = () => {
       theme={theme}
       layout={Layout}
       loginPage={LoginPage}
-      i18nProvider={i18nProvider}
       dataProvider={dataProvider}
       authProvider={authProvider}
+      i18nProvider={i18nProvider}
     >
-
       <Resource
         name="eventos"
         options={{ label: "Cerimônias" }}
@@ -35,10 +38,16 @@ const App = () => {
         show={EventShow}
         hasCreate={false}
         hasEdit={false}
+        icon={LabelIcon}
       />
-      
+      <CustomRoutes>
+            <Route
+                path="/authorities"
+                element={<AuthoritiesRouteLayout title="Posts from /custom" />}
+            />
+        </CustomRoutes>
     </Admin>
   );
-}
+};
 
 export default App;

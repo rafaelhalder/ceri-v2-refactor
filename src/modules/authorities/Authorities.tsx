@@ -1,24 +1,44 @@
 import * as React from 'react';
-import { useGetList } from 'react-admin';
+import {
+    useGetList,
+    useAuthenticated,
+    Datagrid,
+    TextField,
+    Title,
+} from 'react-admin';
 
-const AuthoritiesRouteNoLayout = ({ title = 'Posts' }) => {
-    const { isLoading, total } = useGetList('posts', {
-        pagination: { page: 0, perPage: 10 },
-        sort: { field: 'id', order: 'ASC' },
+const sort = { field: 'published_at', order: 'DESC' };
+
+const AuthoritiesRouteLayout = ({ title = 'Autoridades' }) => {
+    useAuthenticated();
+
+    const { data, total, isLoading } = useGetList('eventos', {
+        pagination: { page: 1, perPage: 10 },
+        sort,
     });
 
-    return (
+    console.log('isLoading', isLoading)
+    debugger
+
+    return !isLoading ? (
         <div>
+            <Title title="Example Admin" />
             <h1>{title}</h1>
-            {isLoading ? (
-                <p className="app-loader">Loading...</p>
-            ) : (
-                <p>
-                    Found <span className="total">{total}</span> posts !
-                </p>
-            )}
+            <p>
+                Found <span className="total">{total}</span> posts !
+            </p>
+            <Datagrid
+                sort={sort}
+                data={data}
+                isLoading={isLoading}
+                total={total}
+                rowClick="edit"
+            >
+                <TextField source="id" sortable={false} />
+                <TextField source="title" sortable={false} />
+            </Datagrid>
         </div>
-    );
+    ) : null;
 };
 
-export default AuthoritiesRouteNoLayout;
+export default AuthoritiesRouteLayout;
