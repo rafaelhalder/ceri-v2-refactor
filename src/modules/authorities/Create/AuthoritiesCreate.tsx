@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Create, Title } from "react-admin";
+import { Title } from "react-admin";
 import { AuthoritiesForm } from "./../Form/AuthoritiesForm";
 
 export const AuthoritiesCreate = () => (

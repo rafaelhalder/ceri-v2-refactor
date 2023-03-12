@@ -17,10 +17,12 @@ import { AuthoritiesShow } from "./modules/authorities/Show/AuthoritiesShow";
 import AuthoritiesList from "./modules/authorities/List/AuthoritiesList";
 import { AuthoritiesForm } from "./modules/authorities/Form/AuthoritiesForm";
 import { AuthoritiesCreate } from "./modules/authorities/Create/AuthoritiesCreate";
+import selfDataProvider from "./core/providers/selfDataProvider";
 
 const options = { logging: true, rootRef: "/" };
 const dataProvider = FirebaseDataProvider(config, options);
 const authProvider = FirebaseAuthProvider(config, options);
+const myDataProvider = selfDataProvider(dataProvider);
 
 const App = () => {
   return (
@@ -29,7 +31,7 @@ const App = () => {
       theme={theme}
       layout={Layout}
       loginPage={LoginPage}
-      dataProvider={dataProvider}
+      dataProvider={myDataProvider}
       authProvider={authProvider}
       i18nProvider={i18nProvider}
     >
