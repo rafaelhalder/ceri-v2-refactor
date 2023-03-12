@@ -11,11 +11,12 @@ import {
 import { i18nProvider } from "./core/providers/i18nProvider";
 import EventList from "./modules/ceremonies/CeremoniesList";
 import { EventShow } from "./modules/ceremonies/CerimoniesShow";
-import LabelIcon from '@mui/icons-material/Label';
+import LabelIcon from "@mui/icons-material/Label";
 import { Route } from "react-router-dom";
-import AuthoritiesRouteLayout from "./modules/authorities/Authorities";
 import { AuthoritiesShow } from "./modules/authorities/Show/AuthoritiesShow";
-import AuthoritiesList from "./modules/authorities/AuthoritiesList";
+import AuthoritiesList from "./modules/authorities/List/AuthoritiesList";
+import { AuthoritiesForm } from "./modules/authorities/Form/AuthoritiesForm";
+import { AuthoritiesCreate } from "./modules/authorities/Create/AuthoritiesCreate";
 
 const options = { logging: true, rootRef: "/" };
 const dataProvider = FirebaseDataProvider(config, options);
@@ -42,15 +43,11 @@ const App = () => {
         icon={LabelIcon}
       />
       <CustomRoutes>
-            <Route
-                path="/authorities"
-                element={<AuthoritiesList />}
-            />
-            <Route
-                path="/authorities/show/:id"
-                element={<AuthoritiesShow />}
-            />
-        </CustomRoutes>
+        <Route path="/authorities" element={<AuthoritiesList />} />
+        <Route path="/authorities/create" element={<AuthoritiesCreate />} />
+        <Route path="/authorities/show/:id" element={<AuthoritiesShow />} />
+        <Route path="/authorities/edit/:id" element={<AuthoritiesForm />} />
+      </CustomRoutes>
     </Admin>
   );
 };

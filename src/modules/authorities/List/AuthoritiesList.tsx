@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useAuthenticated, Title } from "react-admin";
-import { getList } from "./AuthoritiesService";
-import { Authority } from "./authority.interface";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { AuthoritiesShow } from "./AuthoritiesShow";
+import { getList } from "../AuthoritiesService";
+import { Authority } from "../authority.interface";
+import { DataGrid } from "@mui/x-data-grid";
 import ImageEye from "@mui/icons-material/RemoveRedEye";
 import ContentCreate from "@mui/icons-material/Create";
 import { Link } from "react-router-dom";
@@ -21,7 +20,11 @@ const CustomActionsColumn = ({ authority }: CustomActionColumn) => {
         <ImageEye />
       </Link>
 
-      <Link to={`/authorities/edit/${authority.id}`}>
+      {/* <Link to={`/authorities/edit/${authority.id}`}>
+        <ContentCreate />
+      </Link> */}
+
+      <Link to={`/authorities/create`}>
         <ContentCreate />
       </Link>
     </>
