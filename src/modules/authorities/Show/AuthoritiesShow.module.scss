@@ -1,0 +1,28 @@
+.card {
+  min-width: 100vh;
+  margin: auto;
+  margin-top: 50px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+
+  .title {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #424242;
+  }
+
+  .info {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #424242;
+  }
+
+  .data {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #757575;
+  }
+}

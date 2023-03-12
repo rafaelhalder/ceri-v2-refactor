@@ -14,7 +14,8 @@ import { EventShow } from "./modules/ceremonies/CerimoniesShow";
 import LabelIcon from '@mui/icons-material/Label';
 import { Route } from "react-router-dom";
 import AuthoritiesRouteLayout from "./modules/authorities/Authorities";
-
+import { AuthoritiesShow } from "./modules/authorities/Show/AuthoritiesShow";
+import AuthoritiesList from "./modules/authorities/AuthoritiesList";
 
 const options = { logging: true, rootRef: "/" };
 const dataProvider = FirebaseDataProvider(config, options);
@@ -43,7 +44,11 @@ const App = () => {
       <CustomRoutes>
             <Route
                 path="/authorities"
-                element={<AuthoritiesRouteLayout title="Posts from /custom" />}
+                element={<AuthoritiesList />}
+            />
+            <Route
+                path="/authorities/show/:id"
+                element={<AuthoritiesShow />}
             />
         </CustomRoutes>
     </Admin>

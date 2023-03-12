@@ -32,6 +32,7 @@ const EventList = (props) => {
         actions={<ListActions />}>
         <Datagrid bulkActionButtons={false}>
           <TituloField source="titulo" label="Título" />
+          <TextField source="titulo" label="Título" />
           <TextField source="areaAtuacao" label="Área de atuação" />
           <TextField source="tipoEvento" label="Tipo" />
           <TextField source="dataPtBr" label="Data" sortBy="data" />
