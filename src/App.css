@@ -16,10 +16,6 @@ body{
     margin-left: 1em;
   }
   
-  .filter-field{
-    width: 100%;
-  }
-  
   .MuiCardContent-root:first-child {
     padding-top: 24px !important;
   }
