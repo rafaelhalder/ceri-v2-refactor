@@ -20,9 +20,9 @@ const CustomActionsColumn = ({ authority }: CustomActionColumn) => {
         <ImageEye />
       </Link>
 
-      {/* <Link to={`/authorities/edit/${authority.id}`}>
+      <Link to={`/authorities/edit/${authority.id}`}>
         <ContentCreate />
-      </Link> */}
+      </Link>
 
       <Link to={`/authorities/create`}>
         <ContentCreate />

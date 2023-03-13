@@ -25,8 +25,6 @@ export const PhoneInput = ({ name, label, formik, ...props }) => {
         placeholder="(99) 99999-9999"
         onChange={handleChange}
         inputProps={{ maxLength: 14 }}
-        error={fieldError}
-        helperText={touched && touched[name] && errors && errors[name]}
       />
     </FormControl>
   );

@@ -5,8 +5,16 @@ import { statesConstant } from "./States.constant";
 import { PhoneInput } from "../../../components/InputPhone/InputPhone";
 import { InputSelect } from "../../../components/InputSelect/InputSelect";
 import { Box, FormControl, TextField } from "@mui/material";
+import { Authority } from "./../authority.interface";
+import { getById } from "./../AuthoritiesService";
+import { useParams } from 'react-router-dom';
+import { getDatabase, push, ref, set, remove } from "firebase/database";
+
+
+const db = getDatabase();
 
 const Input = ({ formik, name, label, ...otherProps }) => {
+
   const { errors, touched } = formik;
   const fieldError = touched[name] && Boolean(errors[name]);
 
@@ -44,6 +52,49 @@ const FIELD_REQUIRED = "Campo obrigatório.";
 
 export const AuthoritiesForm = () => {
   const [data, setData] = React.useState<any>({});
+  const { id } = useParams();
+  var [authority, setAuthority] = React.useState<Authority>({} as Authority);
+  const [loading, setLoading] = React.useState(true);
+  var status = 'Atualizar';
+  var hidden = '';
+
+  function deleteUser() {
+    remove(ref(db, 'authorities/' + id));
+    console.log(id);
+  }
+  
+  React.useEffect(() => {
+    const fetchRows = async () => {
+      setLoading(true);
+      const response = await getById("authorities", id || "");
+      setAuthority(response as Authority);
+      setLoading(false);
+    };
+    fetchRows();
+  }, []);
+
+  if(id == undefined){
+    status = 'Cadastrar';
+    
+    authority = {
+      id: '',
+      status: '',
+      whatsAppOn: false,
+      name: '',
+      displayName: '',
+      phoneNumber: '',
+      email: '',
+      chairPerson: '',
+      chainPersonCellNumber: '',
+      city: '',
+      party: '',
+      cellNumber: '',
+      role: '',
+      country: "BRASIL",
+      state: '',
+    };
+  }
+
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required(FIELD_REQUIRED).max(255),
@@ -63,34 +114,80 @@ export const AuthoritiesForm = () => {
     role: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
     phoneNumber: Yup.string()
       .required(FIELD_REQUIRED)
-      .matches(/^[1-9]{2}9?[0-9]{8}$/, "Telefone inválido"),
+      .max(255, EXCEED_CHARACTERS),
     chainPersonCellNumber: Yup.string()
       .required(FIELD_REQUIRED)
-      .matches(/^[1-9]{2}9?[0-9]{8}$/, "Telefone inválido"),
+      .max(255, EXCEED_CHARACTERS),
     cellNumber: Yup.string()
       .required(FIELD_REQUIRED)
-      .matches(/^[1-9]{2}9?[0-9]{8}$/, "Telefone inválido"),
+      .max(255, EXCEED_CHARACTERS),
   });
 
-  const formik = useFormik({
+  var formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
-      displayName: "",
-      phoneNumber: "",
-      email: "",
-      chairPerson: "",
-      chainPersonCellNumber: "",
-      city: "",
-      party: "",
-      cellNumber: "",
-      role: "",
-      country: "Brasil",
+      name: authority?.name,
+      displayName: authority?.displayName,
+      phoneNumber: authority?.phoneNumber,
+      email: authority?.email,
+      chairPerson: authority?.chairPerson,
+      chainPersonCellNumber: authority?.chainPersonCellNumber,
+      city: authority?.city,
+      party: authority?.party,
+      cellNumber: authority?.cellNumber,
+      role: authority?.role,
+      country: "BRASIL",
+      state: authority?.state,
     },
     validationSchema,
     onSubmit: (data) => {
-      console.log(JSON.stringify(data, null, 2));
+      if(id == undefined){
+        push(ref(db, 'authorities/'),{
+          cellNumber: data.cellNumber,
+          chairPerson: data.chairPerson,
+          chainPersonCellNumber: data.chainPersonCellNumber,
+          city: data.city,
+          country: data.country,
+          displayName: data.displayName,
+          email: data.email,
+          name: data.name,
+          party: data.party,
+          phoneNumber: data.phoneNumber,
+          state: data.state,
+          role: data.role,
+          status: "ELEITO",
+          whatsAppOn: false
+        });
+
+      }else{
+        set(ref(db, 'authorities/' + id), {
+          cellNumber: data.cellNumber,
+          chairPerson: data.chairPerson,
+          chainPersonCellNumber: data.chainPersonCellNumber,
+          city: data.city,
+          country: data.country,
+          displayName: data.displayName,
+          email: data.email,
+          name: data.name,
+          party: data.party,
+          phoneNumber: data.phoneNumber,
+          state: data.state,
+          role: data.role,
+          status: "ELEITO",
+          whatsAppOn: false
+        })
+        .then(() => {
+  
+          // Data saved successfully!
+        })
+        .catch((error) => {
+  
+          // The write failed...
+        });
+      }
     },
   });
+  const params = new URLSearchParams(window.location.pathname);
 
   return (
     <Box
@@ -160,9 +257,13 @@ export const AuthoritiesForm = () => {
           required
         />
         <button type="submit" className="btn btn-primary">
-          Cadastrar
+          {status}
+        </button>
+        <button type="button" onClick={deleteUser} className="btn btn-danger" >
+          deletar
         </button>
       </form>
     </Box>
   );
+
 };
