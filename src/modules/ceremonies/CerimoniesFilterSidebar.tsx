@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FilterLiveSearch } from "react-admin";
+import { FilterLiveSearch, useListContext } from "react-admin";
 import {
   YearFilter,
   DataFilter,
@@ -22,6 +22,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const FilterSidebar = (props) => {
+  const { data } = useListContext();
+
   return (
     <Card>
       <CardContent>
@@ -49,29 +51,26 @@ const FilterSidebar = (props) => {
           Limpar filtros
         </Button>
         <YearFilter />
-        <div className="space"></div>
         <DataFilter />
-        <div className="space"></div>
-        <div className="space"></div>
-        <EventTypeFilter data={props} />
-        <EventCharacterFilter data={props} />
-        <ActuationAreaFilter data={props} />
+        <EventTypeFilter data={data} />
+        <EventCharacterFilter data={data} />
+        <ActuationAreaFilter data={data} />
         <FilterLiveSearch fullWidth source="titulo" label="Título" />
-        <br />
+        
         <FilterLiveSearch fullWidth source="pais" label="País" />
-        <br />
+        
         <FilterLiveSearch fullWidth source="estado" label="Estado" />
-        <br />
+        
         <FilterLiveSearch fullWidth source="municipio" label="Município" />
-        <br />
+        
         <FilterLiveSearch
           fullWidth
           source="quantitativoPublico"
           label="Quant. de público"
         />
-        <br />
+        
         <FilterLiveSearch fullWidth source="autoridades" label="Autoridades" />
-        <br />
+        
         <FilterLiveSearch fullWidth source="resumo" label="Resumo" />
       </CardContent>
     </Card>
