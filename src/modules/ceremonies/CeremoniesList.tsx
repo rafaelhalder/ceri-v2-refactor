@@ -9,6 +9,7 @@ import {
   TopToolbar,
   ExportButton,
   useListFilterContext,
+  FunctionField,
 } from "react-admin";
 import FilterSidebar from "./CerimoniesFilterSidebar";
 import { titleCase } from "../../core/utils/title-case";
@@ -54,12 +55,6 @@ const ListActions = (props) => {
   );
 };
 
-const TituloField = (props) => {
-  return <span>{titleCase(props.titulo)}</span>;
-};
-
-TituloField.defaultProps = { label: "Name" };
-
 const EventList = () => {
   return (
     <>
@@ -71,8 +66,10 @@ const EventList = () => {
         filterDefaultValues={{ ano: new Date().getFullYear() }}
       >
         <Datagrid bulkActionButtons={false}>
-          <TituloField source="titulo" label="Título" />
-          <TextField source="titulo" label="Título" />
+          <FunctionField
+            label="Título"
+            render={(record) => titleCase(record && record.titulo)}
+          />
           <TextField source="areaAtuacao" label="Área de atuação" />
           <TextField source="tipoEvento" label="Tipo" />
           <TextField source="dataPtBr" label="Data" sortBy="data" />
