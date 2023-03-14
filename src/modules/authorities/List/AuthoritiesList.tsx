@@ -9,8 +9,6 @@ import ContentCreate from "@mui/icons-material/Create";
 import { Link } from "react-router-dom";
 import { Fab } from "@mui/material";
 
-const PAGE_SIZE = 10;
-
 interface CustomActionColumn {
   authority: Authority;
 }
@@ -33,34 +31,32 @@ const CustomActionsColumn = ({ authority }: CustomActionColumn) => {
 };
 
 const columns = [
-  { field: "name", headerName: "Nome da Autoridade", width: 90 },
-  { field: "displayName", headerName: "Nome de exibição", width: 150 },
-  { field: "email", headerName: "Email", width: 250 },
+  { field: "name", headerName: "Nome da Autoridade", width: 200 },
+  { field: "displayName", headerName: "Nome de exibição", width: 200 },
+  { field: "email", headerName: "Email", width: 150 },
   { field: "phoneNumber", headerName: "Telefone da Autoridade", width: 150 },
   { field: "role", headerName: "Cargo da autoridade", width: 150 },
   {
     field: "chainPersonCellNumber",
     headerName: "N° celular do presidente",
-    width: 150,
+    width: 90,
   },
-  { field: "city", headerName: "Cidade", width: 150 },
-  { field: "country", headerName: "País", width: 150 },
-  { field: "party", headerName: "Partido", width: 150 },
-  { field: "state", headerName: "Estado", width: 150 },
+  { field: "city", headerName: "Cidade", width: 100 },
+  { field: "country", headerName: "País", width: 100 },
+  { field: "party", headerName: "Partido", width: 60 },
+  { field: "state", headerName: "Estado", width: 100 },
   {
     field: "actions",
     headerName: "Ações",
     sortable: false,
-    width: 150,
+    width: 90,
     renderCell: (authority) => <CustomActionsColumn authority={authority} />,
   },
 ];
 
-const AuthoritiesList = ({ title = "Autoridades" }) => {
+const AuthoritiesList = () => {
   useAuthenticated();
-  const [totalRows, setTotalRows] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
   const [authorities, setAuthorities] = React.useState<Authority[] | []>([]);
 
   function convertToPersonList(
@@ -72,32 +68,32 @@ const AuthoritiesList = ({ title = "Autoridades" }) => {
     }));
   }
 
-  React.useEffect(() => {
-    const fetchRows = async () => {
-      setLoading(true);
-      const response = convertToPersonList(await getList("authorities", 50));
-      setAuthorities(response);
-      setTotalRows(response.length);
-      setLoading(false);
-    };
-    fetchRows();
-  }, [currentPage]);
-
-  const handlePageChange = (params) => {
-    setCurrentPage(params.page);
+  const fetchData = async () => {
+    setLoading(true);
+    const response = await getList<Authority>("authorities", 999999)
+    setAuthorities(convertToPersonList(response));
+    setLoading(false);
   };
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
       <Title title="Lista de Autoridades" />
-      <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
+      <div style={{ height: 631, width: "100%", marginTop: 20 }}>
+      <DataGrid
+          loading={loading}
           columns={columns}
           rows={authorities}
-          paginationMode={"server"}
+          autoPageSize={true}
+          paginationMode="client"
+          sortingMode="client"
+          pagination
           pageSizeOptions={[10, 25, 50]}
-          rowCount={totalRows}
-          loading={loading}
+          rowCount={authorities.length}
+          rowSelection={false}
         />
       </div>
       <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>

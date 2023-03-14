@@ -28,7 +28,7 @@ const CustomActionsColumn = ({ event }: CustomActionColumn) => {
 };
 
 const columns = [
-  { field: "title", headerName: "Título do evento", width: 400 },
+  { field: "title", headerName: "Título do evento", width: 500 },
   { field: "dateTime", headerName: "Data do Evento", width: 150 },
   { field: "disabled", headerName: "Status do Evento", width: 150 },
   { field: "local", headerName: "Local do evento", width: 300 },
@@ -72,14 +72,18 @@ const EventsList = () => {
   return (
     <div>
       <Title title="Lista de Eventos" />
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 631, width: "100%", marginTop: 20 }}>
         <DataGrid
           columns={columns}
           rows={events}
-          paginationMode={"server"}
+          autoPageSize={true}
           pageSizeOptions={[10, 25, 50]}
+          paginationMode="client"
+          sortingMode="client"
+          pagination
           rowCount={totalRows}
           loading={loading}
+          rowSelection={false}
         />
       </div>
       <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
