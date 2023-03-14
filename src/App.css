@@ -16,10 +16,6 @@ body{
     margin-left: 1em;
   }
   
-  .filter-field{
-    width: 100%;
-  }
-  
   .MuiCardContent-root:first-child {
     padding-top: 24px !important;
   }
@@ -53,11 +49,7 @@ body{
     transition: 0.3s ease-in-out;
     font-size: 18px;
   }
-  
-  input:focus {
-    border: 2px solid #2b4b5a;
-  }
-  
+
   select:focus {
     border: 2px solid #2b4b5a;
   }

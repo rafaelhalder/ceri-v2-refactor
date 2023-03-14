@@ -34,13 +34,13 @@ export const exporterCSVFull = events => {
   downloadCSV(csv, 'eventos');
 };
 
-export const exporterPDF = (events) => {
+export const exporterPDF = (events, filterValues) => {
   const eventsData: any[] = [];
-  for(let key of events.ids){
+  for(let event of events){
     eventsData.push({
-      data: events.data[key].dataPtBr,
-      municipio: events.data[key].municipio,
-      evento: titleCase(events.data[key].titulo),
+      data: event.dataPtBr,
+      municipio: event.municipio,
+      evento: titleCase(event.titulo),
     })
   }
 
@@ -51,19 +51,19 @@ export const exporterPDF = (events) => {
 
   doc.addImage(logo, 'PNG', 55, 3, 100, 75);
 
-  if(events.filterValues.ano){
-    doc.text(`RESUMO DAS AÇÕES DESENVOLVIDAS NA ÁREA DE EVENTOS NO EXERCÍCIO DE ${events.filterValues.ano}.`, 105, 68, { align: 'center'});
+  if(filterValues.ano){
+    doc.text(`RESUMO DAS AÇÕES DESENVOLVIDAS NA ÁREA DE EVENTOS NO EXERCÍCIO DE ${filterValues.ano}.`, 105, 68, { align: 'center'});
   }
 
-  if(events.filterValues.data_gte || events.filterValues.data_lte){
+  if(filterValues.data_gte || filterValues.data_lte){
     let text = 'INTERVALO: ';
-    if(events.filterValues.data_gte){
-      const dataPieces = events.filterValues.data_gte.split('-');
+    if(filterValues.data_gte){
+      const dataPieces = filterValues.data_gte.split('-');
       text += 'A PARTIR DE ' + dataPieces[2] + '/' + dataPieces[1] + '/' + dataPieces[0];
     }
-    if(events.filterValues.data_gte && events.filterValues.data_lte) text += ' ';
-    if(events.filterValues.data_lte){
-      const dataPieces = events.filterValues.data_lte.split('-');
+    if(filterValues.data_gte && filterValues.data_lte) text += ' ';
+    if(filterValues.data_lte){
+      const dataPieces = filterValues.data_lte.split('-');
       text += 'ATÉ ' + dataPieces[2] + '/' + dataPieces[1] + '/' + dataPieces[0];
     }
     doc.text(text, 105, 75, { align: "center"});
@@ -81,24 +81,24 @@ export const exporterPDF = (events) => {
   doc.save('eventos.pdf');
 };
 
-export const exporterPDFFull = events => {
+export const exporterPDFFull = (events, filterValues) => {
   const eventsData: any[] = [];
-  for(let key of events.ids){
+  for(let event of events){
     eventsData.push({
-      data: events.data[key].dataPtBr + ' ' + events.data[key].horario,
-      evento: titleCase(events.data[key].titulo),
-      areaAtuacao: events.data[key].areaAtuacao,
-      autoridades: events.data[key].autoridades,
-      caraterEvento: events.data[key].caraterEvento,
-      cerimonialistas: events.data[key].cerimonialistas,
-      equipeEstrutura: events.data[key].equipeEstrutura,
-      mestreCerimonia: events.data[key].mestreCerimonia,
-      motorista: events.data[key].motorista,
-      observacao: events.data[key].observacao,
-      local: events.data[key].pais + ' / ' + events.data[key].estado + ' / ' + events.data[key].municipio,
-      quantitativoPublico: events.data[key].quantitativoPublico,
-      resumo: events.data[key].resumo,
-      tipoEvento: events.data[key].tipoEvento
+      data: event.dataPtBr + ' ' + event.horario,
+      evento: titleCase(event.titulo),
+      areaAtuacao: event.areaAtuacao,
+      autoridades: event.autoridades,
+      caraterEvento: event.caraterEvento,
+      cerimonialistas: event.cerimonialistas,
+      equipeEstrutura: event.equipeEstrutura,
+      mestreCerimonia: event.mestreCerimonia,
+      motorista: event.motorista,
+      observacao: event.observacao,
+      local: event.pais + ' / ' + event.estado + ' / ' + event.municipio,
+      quantitativoPublico: event.quantitativoPublico,
+      resumo: event.resumo,
+      tipoEvento: event.tipoEvento
     })
   }
 
@@ -109,19 +109,19 @@ export const exporterPDFFull = events => {
 
   doc.addImage(logo, 'PNG', 98, 3, 100, 75);
 
-  if(events.filterValues.ano){
-    doc.text(`RESUMO DAS AÇÕES DESENVOLVIDAS NA ÁREA DE EVENTOS NO EXERCÍCIO DE ${events.filterValues.ano}.`, 148, 68, { align: 'center'});
+  if(filterValues.ano){
+    doc.text(`RESUMO DAS AÇÕES DESENVOLVIDAS NA ÁREA DE EVENTOS NO EXERCÍCIO DE ${filterValues.ano}.`, 148, 68, { align: 'center'});
   }
 
-  if(events.filterValues.data_gte || events.filterValues.data_lte){
+  if(filterValues.data_gte || filterValues.data_lte){
     let text = 'INTERVALO: ';
-    if(events.filterValues.data_gte){
-      const dataPieces = events.filterValues.data_gte.split('-');
+    if(filterValues.data_gte){
+      const dataPieces = filterValues.data_gte.split('-');
       text += 'A PARTIR DE ' + dataPieces[2] + '/' + dataPieces[1] + '/' + dataPieces[0];
     }
-    if(events.filterValues.data_gte && events.filterValues.data_lte) text += ' ';
-    if(events.filterValues.data_lte){
-      const dataPieces = events.filterValues.data_lte.split('-');
+    if(filterValues.data_gte && filterValues.data_lte) text += ' ';
+    if(filterValues.data_lte){
+      const dataPieces = filterValues.data_lte.split('-');
       text += 'ATÉ ' + dataPieces[2] + '/' + dataPieces[1] + '/' + dataPieces[0];
     }
     doc.text(text, 148, 75, { align: "center"});
@@ -154,11 +154,11 @@ export const exporterXLSX = (events) => {
   const eventsData: any[] = [];
   eventsData.push(['data', 'municipio', 'evento']);
 
-  for(let key of events.ids){
+  for(let event of events){
     eventsData.push([
-      events.data[key].dataPtBr,
-      events.data[key].municipio,
-      titleCase(events.data[key].titulo),
+      event.dataPtBr,
+      event.municipio,
+      titleCase(event.titulo),
     ])
   }
 
@@ -175,22 +175,22 @@ export const exporterXLSXFull = events => {
     'mestreCerimonia', 'motorista', 'observacao', 'local', 'quantitativoPublico', 'resumo', 'tipoEvento'
   ]);
 
-  for(let key of events.ids){
+  for(let event of events){
     eventsData.push([
-      events.data[key].dataPtBr + ' ' + events.data[key].horario,
-      titleCase(events.data[key].titulo),
-      events.data[key].areaAtuacao,
-      events.data[key].autoridades,
-      events.data[key].caraterEvento,
-      events.data[key].cerimonialistas,
-      events.data[key].equipeEstrutura,
-      events.data[key].mestreCerimonia,
-      events.data[key].motorista,
-      events.data[key].observacao,
-      events.data[key].pais + ' / ' + events.data[key].estado + ' / ' + events.data[key].municipio,
-      events.data[key].quantitativoPublico,
-      events.data[key].resumo,
-      events.data[key].tipoEvento
+      event.dataPtBr + ' ' + event.horario,
+      titleCase(event.titulo),
+      event.areaAtuacao,
+      event.autoridades,
+      event.caraterEvento,
+      event.cerimonialistas,
+      event.equipeEstrutura,
+      event.mestreCerimonia,
+      event.motorista,
+      event.observacao,
+      event.pais + ' / ' + event.estado + ' / ' + event.municipio,
+      event.quantitativoPublico,
+      event.resumo,
+      event.tipoEvento
     ])
   }
 
@@ -202,20 +202,20 @@ export const exporterXLSXFull = events => {
 
 export const exporterSinglePDFFull = event => {
   const eventData = [
-    { key: 'Área de atuação', value: event.data.areaAtuacao },
-    { key: 'Título', value: event.data.titulo },
-    { key: 'Data e Horário', value: event.data.dataPtBr + ' ' + event.data.horario },
-    { key: 'País, estado e município', value: event.data.pais + ' / ' + event.data.estado + ' / ' + event.data.municipio },
-    { key: 'Tipo', value: event.data.tipoEvento },
-    { key: 'Caráter', value: event.data.caraterEvento },
-    { key: 'Quantitativo de público', value: event.data.quantitativoPublico },
-    { key: 'Autoridades presentes', value: event.data.autoridades },
-    { key: 'Resumo', value: event.data.resumo },
-    { key: 'Cerimonialistas', value: event.data.cerimonialistas },
-    { key: 'Equipe', value: event.data.equipeEstrutura },
-    { key: 'Mestre de cerimônia', value: event.data.mestreCerimonia },
-    { key: 'Motorista', value: event.data.motorista },
-    { key: 'Observação', value: event.data.observacao },
+    { key: 'Área de atuação', value: event.areaAtuacao },
+    { key: 'Título', value: event.titulo },
+    { key: 'Data e Horário', value: event.dataPtBr + ' ' + event.horario },
+    { key: 'País, estado e município', value: event.pais + ' / ' + event.estado + ' / ' + event.municipio },
+    { key: 'Tipo', value: event.tipoEvento },
+    { key: 'Caráter', value: event.caraterEvento },
+    { key: 'Quantitativo de público', value: event.quantitativoPublico },
+    { key: 'Autoridades presentes', value: event.autoridades },
+    { key: 'Resumo', value: event.resumo },
+    { key: 'Cerimonialistas', value: event.cerimonialistas },
+    { key: 'Equipe', value: event.equipeEstrutura },
+    { key: 'Mestre de cerimônia', value: event.mestreCerimonia },
+    { key: 'Motorista', value: event.motorista },
+    { key: 'Observação', value: event.observacao },
   ];
 
   const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "portrait" });

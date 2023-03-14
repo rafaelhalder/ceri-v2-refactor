@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { Show, SimpleShowLayout, TopToolbar, TextField } from "react-admin";
+import { Show, SimpleShowLayout, TopToolbar, TextField, useRecordContext } from "react-admin";
 import { titleCase } from '../../core/utils/title-case';
 import { exporterSinglePDFFull } from './ceremonies-list-exportes';
 
@@ -10,19 +10,21 @@ const TituloField = (props) => {
 
 TituloField.defaultProps = { label: "Name" };
 
-const EventShowActions = (props) => (
+const EventShowActions = (props) => {
+  const record = useRecordContext();
+  return (
   <TopToolbar>
     <Button
       variant="contained"
       style={{ marginRight: 10 }}
       color="primary"
-      onClick={() => exporterSinglePDFFull(props)}
+      onClick={() => exporterSinglePDFFull(record)}
     >
       PDF Completo
     </Button>
     {/* <BackButton /> */}
   </TopToolbar>
-);
+)};
 
 export const EventShow = (props) => (
   <Show
