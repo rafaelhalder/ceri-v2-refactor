@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Event } from "../event.interface";
 import { getById } from "../EventsService";
 import {
@@ -9,7 +9,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import styles from './EventsShow.module.scss';
+import styles from "./EventsShow.module.scss";
 
 export const EventsShow = () => {
   const { id } = useParams();
@@ -29,7 +29,9 @@ export const EventsShow = () => {
   return (
     <Card className={styles.card}>
       <CardActions>
-        <Button size="small">Editar</Button>
+        <Link to={`/events/edit/${id}`} style={{ paddingRight: 10 }}>
+          <Button size="small">Editar</Button>
+        </Link>
       </CardActions>
       <CardContent>
         <Typography className={styles.title}>{event.dateTime}</Typography>
@@ -42,7 +44,6 @@ export const EventsShow = () => {
 
         <Typography className={styles.info}>Presidente</Typography>
         <Typography className={styles.data}>{event.title}</Typography>
-
       </CardContent>
     </Card>
   );

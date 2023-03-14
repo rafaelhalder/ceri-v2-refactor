@@ -22,7 +22,11 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const FilterSidebar = (props) => {
-  const { data } = useListContext();
+  const { setFilters, data } = useListContext();
+
+  const handleClearFilters = () => {
+    setFilters({}, {});
+  };
 
   return (
     <Card>
@@ -30,23 +34,7 @@ const FilterSidebar = (props) => {
         <Button
           color="primary"
           fullWidth
-          onClick={() =>
-            props.setFilters({
-              ano: "",
-              titulo: "",
-              data_gte: "",
-              data_lte: "",
-              tipoEvento: "",
-              caraterEvento: "",
-              areaAtuacao: "",
-              pais: "",
-              estado: "",
-              municipio: "",
-              quantitativoPublico: "",
-              autoridades: "",
-              resumo: "",
-            })
-          }
+          onClick={handleClearFilters}
         >
           Limpar filtros
         </Button>
