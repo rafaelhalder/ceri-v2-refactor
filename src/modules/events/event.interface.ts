@@ -1,7 +1,7 @@
 
   interface EventInformation {
     dateTime: string;
-    disabled: boolean;
+    disabled: boolean | string;
     local: string;
     title: string;
   }

@@ -18,7 +18,6 @@ export async function getList<T>(
   const limitedQuery = query(orderedQuery, limitToFirst(limit));
   const snapshot = await get(limitedQuery);
   const results = snapshot.val();
-console.log(results);
   return results;
 }
 
@@ -30,7 +29,6 @@ export async function getById<T>(path: string, id: string): Promise<T | null> {
 
     if (snapshot.exists()) {
       const data = snapshot.val();
-console.log(data);
 
       return data;
     } else {

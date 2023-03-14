@@ -2,7 +2,6 @@ import * as React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { statesConstant } from "./States.constant";
-import { PhoneInput } from "../../../components/InputPhone/InputPhone";
 import { InputSelect } from "../../../components/InputSelect/InputSelect";
 import { Box, FormControl, TextField } from "@mui/material";
 import { Authority } from "./../authority.interface";
@@ -10,49 +9,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react-admin";
 import { Roles } from "../roles.interface";
 import { create, getAll, getById, removeById, update } from "./../AuthoritiesService";
+import { Input } from "../../../components/Input/Input";
 
 interface SelectType {
   value: string;
   label: string;
 }
 
-const Input = ({ formik, name, label, ...otherProps }) => {
-  const { errors, touched } = formik;
-  const fieldError = touched[name] && Boolean(errors[name]);
-
-  return (
-    <FormControl fullWidth error={fieldError}>
-      <TextField
-        fullWidth
-        {...otherProps}
-        {...formik.getFieldProps(name)}
-        name={name}
-        type="text"
-        label={label}
-        variant="outlined"
-        className={
-          "form-control" +
-          (formik.errors &&
-          formik.errors[name] &&
-          formik.touched &&
-          formik.touched[name]
-            ? " is-invalid"
-            : "")
-        }
-        onChange={formik.handleChange}
-        value={formik.values && formik.values[name]}
-        error={fieldError}
-        helperText={touched && touched[name] && errors && errors[name]}
-      />
-    </FormControl>
-  );
-};
-
 const EXCEED_CHARACTERS = "O campo não deve exceder 255 caracteres";
 const FIELD_REQUIRED = "Campo obrigatório.";
 
 export const AuthoritiesForm = () => {
   const navigate = useNavigate();
+  const notify = useNotify();
+  const { id } = useParams();
   const [authority, setAuthority] = React.useState<Authority>({
     id: "",
     status: "",
@@ -72,11 +42,9 @@ export const AuthoritiesForm = () => {
   } as Authority);
   const [roles, setRoles] = React.useState<SelectType[] | []>([]);
 
-  const notify = useNotify();
-  const { id } = useParams();
   const [loading, setLoading] = React.useState(true);
 
-  async function deleteUser() {
+  async function deleteAuthority() {
     removeById("authorities", id)
       .then(() => {
         notify("Autoridade Removida com sucesso", {
@@ -158,7 +126,7 @@ export const AuthoritiesForm = () => {
     chainPersonCellNumber: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
   });
 
-  let formik = useFormik({
+  const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: authority?.name,
@@ -193,6 +161,20 @@ export const AuthoritiesForm = () => {
           status: "ELEITO",
           whatsAppOn: false,
         })
+        .then(() => {
+          notify("Autoridade criada com sucesso", {
+            autoHideDuration: 2000,
+          });
+
+          navigate("/authorities");
+        })
+        .catch((error) => {
+          console.error(error);
+
+          notify("Erro ao criar Autoridade", {
+            autoHideDuration: 2000,
+          });
+        });
       } else {
         update<Omit<Authority, "id">>("authorities", id, {
           cellNumber: data.cellNumber,
@@ -288,12 +270,12 @@ export const AuthoritiesForm = () => {
         {id && (
           <button
             type="button"
-            onClick={deleteUser}
+            onClick={deleteAuthority}
             className="btn btn-danger"
             disabled={loading}
             style={{ marginLeft: 10 }}
           >
-            deletar
+            Remover
           </button>
         )}
       </form>

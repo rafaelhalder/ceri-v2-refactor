@@ -1,97 +1,73 @@
 import * as React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { statesConstant } from "./States.constant";
-import { PhoneInput } from "../../../components/InputPhone/InputPhone";
-import { InputSelect } from "../../../components/InputSelect/InputSelect";
-import { Box, FormControl, TextField } from "@mui/material";
+import { Box, FormControlLabel, Switch } from "@mui/material";
 import { Event } from "../event.interface";
 import { getById } from "../EventsService";
-import { useParams } from 'react-router-dom';
-import { getDatabase, push, ref, set, remove } from "firebase/database";
+import { useNavigate, useParams } from "react-router-dom";
+import { useNotify } from "react-admin";
+import {
+  create,
+  removeById,
+  update,
+} from "../../authorities/AuthoritiesService";
+import { InputDateTime } from "../../../components/InputDateTime/InputDateTime";
+import { Input } from "../../../components/Input/Input";
 
-
-const db = getDatabase();
-
-const Input = ({ formik, name, label, ...otherProps }) => {
-
-  const { errors, touched } = formik;
-  const fieldError = touched[name] && Boolean(errors[name]);
-
-  return (
-    <FormControl fullWidth error={fieldError}>
-      <TextField
-        fullWidth
-        {...otherProps}
-        {...formik.getFieldProps(name)}
-        name={name}
-        type="text"
-        label={label}
-        variant="outlined"
-        className={
-          "form-control" +
-          (formik.errors &&
-          formik.errors[name] &&
-          formik.touched &&
-          formik.touched[name]
-            ? " is-invalid"
-            : "")
-        }
-        onChange={formik.handleChange}
-        value={formik.values && formik.values[name]}
-        inputProps={{ maxLength: 14 }}
-        error={fieldError}
-        helperText={touched && touched[name] && errors && errors[name]}
-      />
-    </FormControl>
-  );
-};
-
-const EXCEED_CHARACTERS = "O campo não deve exceder 255 caracteres";
 const FIELD_REQUIRED = "Campo obrigatório.";
 
 export const EventsForm = () => {
-  const [data, setData] = React.useState<any>({});
+  const navigate = useNavigate();
+  const notify = useNotify();
   const { id } = useParams();
-  var [event, setEvent] = React.useState<Event>({} as Event);
-  const [loading, setLoading] = React.useState(true);
-  var status = 'Atualizar';
-  var hidden = '';
-
-  function deleteEvent() {
-    remove(ref(db, 'events/' + id));
-    console.log(id);
-  }
-  
-  React.useEffect(() => {
-    const fetchRows = async () => {
-      setLoading(true);
-      const response = await getById("events", id || "");
-      setEvent(response as Event);
-      setLoading(false);
-    };
-    fetchRows();
-  }, []);
-
-  if(id == undefined){
-    status = 'Cadastrar';
-    
-    event = {
-      id: '',
-      dateTime: '',
-      disabled: false,
-      local: '',
-      title: '',
-    };
-  }
-
-
-  const validationSchema = Yup.object().shape({
-    dateTime: Yup.string().required(FIELD_REQUIRED).max(255),
-
+  const [eventDisabled, setEventDisabled] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [event, setEvent] = React.useState<Event>({
+    id: "",
+    dateTime: "",
+    disabled: false,
+    local: "",
+    title: "",
   });
 
-  var formik = useFormik({
+  async function deleteEvent() {
+    removeById("events", id)
+      .then(() => {
+        notify("Evento Removido com sucesso", {
+          autoHideDuration: 2000,
+        });
+        navigate("/events");
+      })
+      .catch((error) => {
+        console.error(error);
+
+        notify("Erro ao remover Autoridade", {
+          autoHideDuration: 2000,
+        });
+      });
+  }
+
+  async function fetchEvents() {
+    setLoading(true);
+    const response = await getById<Event>("events", id || "");
+    setEvent(response);
+    setEventDisabled(Boolean(response.disabled));
+    setLoading(false);
+  }
+
+  React.useEffect(() => {
+    if (id) {
+      fetchEvents();
+    }
+  }, [id]);
+
+  const validationSchema = Yup.object().shape({
+    disabled: Yup.string().required(FIELD_REQUIRED).max(255),
+    local: Yup.string().required(FIELD_REQUIRED).max(255),
+    title: Yup.string().required(FIELD_REQUIRED).max(255),
+  });
+
+  const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       dateTime: event?.dateTime,
@@ -101,73 +77,106 @@ export const EventsForm = () => {
     },
     validationSchema,
     onSubmit: (data) => {
-      if(id == undefined){
-        push(ref(db, 'events/'),{
+      if (id == undefined) {
+        create<Omit<Event, "id">>("events", {
           dateTime: data.dateTime,
-          disabled: data.disabled,
+          disabled: eventDisabled,
           local: data.local,
           title: data.title,
-        });
+        })
+          .then(() => {
+            notify("Evento criado com sucesso", {
+              autoHideDuration: 2000,
+            });
 
-      }else{
-        set(ref(db, 'events/' + id), {
+            navigate("/events");
+          })
+          .catch((error) => {
+            console.error(error);
+
+            notify("Erro ao criar Evento", {
+              autoHideDuration: 2000,
+            });
+          });
+      } else {
+        update<Omit<Event, "id">>("events", id, {
           dateTime: data.dateTime,
-          disabled: data.disabled,
+          disabled: eventDisabled,
           local: data.local,
           title: data.title,
         })
-        .then(() => {
-  
-          // Data saved successfully!
-        })
-        .catch((error) => {
-  
-          // The write failed...
-        });
+          .then(() => {
+            notify("Evento atualizado com sucesso", {
+              autoHideDuration: 2000,
+            });
+
+            navigate("/events");
+          })
+          .catch((error) => {
+            console.error(error);
+
+            notify("Erro ao atualizar Evento", {
+              autoHideDuration: 2000,
+            });
+          });
       }
     },
   });
-  const params = new URLSearchParams(window.location.pathname);
 
   return (
     <Box
       sx={{
+        paddingTop: 1,
         paddingBottom: 1,
         display: "flex",
         flexWrap: "wrap",
         "& .MuiTextField-root": { m: 1 },
-        "& input": { "&:focus": { border: "none" } },
       }}
     >
       <form onSubmit={formik.handleSubmit}>
         <Input
           formik={formik}
-          name="dateTime"
-          label={"Nome da Autoridade"}
-          required
-        />
-        <Input
-          formik={formik}
-          name="disabled"
-          label={"Nome de exibição"}
-          required
-        />
-      
-        <Input formik={formik} name="local" label={"E-mail"} required />
-        <Input
-          formik={formik}
           name="title"
-          label={"Presidente"}
+          label={"Titulo do Evento"}
           required
         />
-        <button type="submit" className="btn btn-primary">
-          {status}
+
+        <InputDateTime
+          formik={formik}
+          name="dateTime"
+          label={"Data do Evento"}
+        />
+
+        <Input formik={formik} name="local" label={"Endereço"} required />
+
+        <FormControlLabel
+          control={
+            <Switch
+              name="disabled"
+              checked={eventDisabled}
+              onChange={() => {
+                setEventDisabled(!eventDisabled);
+              }}
+            />
+          }
+          label={`Evento ${eventDisabled ? "Habilitado" : "Desabilitado"}`}
+        />
+
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {id ? "Atualizar" : "Criar"}
         </button>
-        <button type="button" onClick={deleteEvent} className="btn btn-danger" >
-          deletar
-        </button>
+        {id && (
+          <button
+            type="button"
+            onClick={deleteEvent}
+            className="btn btn-danger"
+            disabled={loading}
+            style={{ marginLeft: 10 }}
+          >
+            Remover
+          </button>
+        )}
       </form>
     </Box>
   );
-
 };

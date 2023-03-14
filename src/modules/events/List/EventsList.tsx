@@ -5,9 +5,9 @@ import { Event } from "../event.interface";
 import { DataGrid } from "@mui/x-data-grid";
 import ImageEye from "@mui/icons-material/RemoveRedEye";
 import ContentCreate from "@mui/icons-material/Create";
+import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
-
-const PAGE_SIZE = 10;
+import { Fab } from "@mui/material";
 
 interface CustomActionColumn {
   event: Event;
@@ -16,15 +16,11 @@ interface CustomActionColumn {
 const CustomActionsColumn = ({ event }: CustomActionColumn) => {
   return (
     <>
-      <Link to={`/events/show/${event.id}`}>
+      <Link to={`/events/show/${event.id}`} style={{ paddingRight: 10 }}>
         <ImageEye />
       </Link>
 
       <Link to={`/events/edit/${event.id}`}>
-        <ContentCreate />
-      </Link>
-
-      <Link to={`/events/create`}>
         <ContentCreate />
       </Link>
     </>
@@ -32,10 +28,10 @@ const CustomActionsColumn = ({ event }: CustomActionColumn) => {
 };
 
 const columns = [
-  { field: "dateTime", headerName: "Nome da Autoridade", width: 90 },
-  { field: "disabled", headerName: "Nome de exibição", width: 150 },
-  { field: "local", headerName: "Email", width: 250 },
-  { field: "title", headerName: "Telefone da Autoridade", width: 150 },
+  { field: "title", headerName: "Título do evento", width: 400 },
+  { field: "dateTime", headerName: "Data do Evento", width: 150 },
+  { field: "disabled", headerName: "Status do Evento", width: 150 },
+  { field: "local", headerName: "Local do evento", width: 300 },
   {
     field: "actions",
     headerName: "Ações",
@@ -45,7 +41,7 @@ const columns = [
   },
 ];
 
-const EventsList = ({ title = "Eventos" }) => {
+const EventsList = () => {
   useAuthenticated();
   const [totalRows, setTotalRows] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -62,17 +58,16 @@ const EventsList = ({ title = "Eventos" }) => {
   React.useEffect(() => {
     const fetchRows = async () => {
       setLoading(true);
-      const response = convertToPersonList(await getList("events", 50));
-      setEvents(response);
+      const response = convertToPersonList(await getList<Event>("events", 50));
+      setEvents(response.map((value) => ({
+        ...value,
+        disabled: value.disabled ? 'Desabilitado' : 'Habilitado',
+      })));
       setTotalRows(response.length);
       setLoading(false);
     };
     fetchRows();
   }, [currentPage]);
-
-  const handlePageChange = (params) => {
-    setCurrentPage(params.page);
-  };
 
   return (
     <div>
@@ -86,6 +81,13 @@ const EventsList = ({ title = "Eventos" }) => {
           rowCount={totalRows}
           loading={loading}
         />
+      </div>
+      <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
+        <Link to={'/events/create'}>
+          <Fab color="primary" aria-label="criar">
+            <AddIcon />
+          </Fab>
+        </Link>
       </div>
     </div>
   );
