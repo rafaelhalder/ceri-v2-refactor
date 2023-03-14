@@ -1,29 +1,110 @@
 export const statesConstant: { label: string; value: string }[] = [
-  { label: "Acre", value: "AC" },
-  { label: "Alagoas", value: "AL" },
-  { label: "Amapá", value: "AP" },
-  { label: "Amazonas", value: "AM" },
-  { label: "Bahia", value: "BA" },
-  { label: "Ceará", value: "CE" },
-  { label: "Distrito Federal", value: "DF" },
-  { label: "Espírito Santo", value: "ES" },
-  { label: "Goiás", value: "GO" },
-  { label: "Maranhão", value: "MA" },
-  { label: "Mato Grosso", value: "MT" },
-  { label: "Mato Grosso do Sul", value: "MS" },
-  { label: "Minas Gerais", value: "MG" },
-  { label: "Pará", value: "PA" },
-  { label: "Paraíba", value: "PB" },
-  { label: "Paraná", value: "PR" },
-  { label: "Pernambuco", value: "PE" },
-  { label: "Piauí", value: "PI" },
-  { label: "Rio de Janeiro", value: "RJ" },
-  { label: "Rio Grande do Norte", value: "RN" },
-  { label: "Rio Grande do Sul", value: "RS" },
-  { label: "Rondônia", value: "RO" },
-  { label: "Roraima", value: "RR" },
-  { label: "Santa Catarina", value: "SC" },
-  { label: "São Paulo", value: "SP" },
-  { label: "Sergipe", value: "SE" },
-  { label: "Tocantins", value: "TO" },
+  {
+    label: "Acre",
+    value: "ACRE",
+  },
+  {
+    label: "Alagoas",
+    value: "ALAGOAS",
+  },
+  {
+    label: "Amapá",
+    value: "AMAPÁ",
+  },
+  {
+    label: "Amazonas",
+    value: "AMAZONAS",
+  },
+  {
+    label: "Bahia",
+    value: "BAHIA",
+  },
+  {
+    label: "Ceará",
+    value: "CEARÁ",
+  },
+  {
+    label: "Distrito Federal",
+    value: "DISTRITO FEDERAL",
+  },
+  {
+    label: "Espírito Santo",
+    value: "ESPÍRITO SANTO",
+  },
+  {
+    label: "Goiás",
+    value: "GOIÁS",
+  },
+  {
+    label: "Maranhão",
+    value: "MARANHÃO",
+  },
+  {
+    label: "Mato Grosso",
+    value: "MATO GROSSO",
+  },
+  {
+    label: "Mato Grosso do Sul",
+    value: "MATO GROSSO DO SUL",
+  },
+  {
+    label: "Minas Gerais",
+    value: "MINAS GERAIS",
+  },
+  {
+    label: "Pará",
+    value: "PARÁ",
+  },
+  {
+    label: "Paraíba",
+    value: "PARAÍBA",
+  },
+  {
+    label: "Paraná",
+    value: "PARANÁ",
+  },
+  {
+    label: "Pernambuco",
+    value: "PERNAMBUCO",
+  },
+  {
+    label: "Piauí",
+    value: "PIAUÍ",
+  },
+  {
+    label: "Rio de Janeiro",
+    value: "RIO DE JANEIRO",
+  },
+  {
+    label: "Rio Grande do Norte",
+    value: "RIO GRANDE DO NORTE",
+  },
+  {
+    label: "Rio Grande do Sul",
+    value: "RIO GRANDE DO SUL",
+  },
+  {
+    label: "Rondônia",
+    value: "RONDÔNIA",
+  },
+  {
+    label: "Roraima",
+    value: "RORAIMA",
+  },
+  {
+    label: "Santa Catarina",
+    value: "SANTA CATARINA",
+  },
+  {
+    label: "São Paulo",
+    value: "SÃO PAULO",
+  },
+  {
+    label: "Sergipe",
+    value: "SERGIPE",
+  },
+  {
+    label: "Tocantins",
+    value: "TOCANTINS",
+  },
 ];

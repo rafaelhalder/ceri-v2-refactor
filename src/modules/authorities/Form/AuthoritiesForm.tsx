@@ -6,15 +6,17 @@ import { PhoneInput } from "../../../components/InputPhone/InputPhone";
 import { InputSelect } from "../../../components/InputSelect/InputSelect";
 import { Box, FormControl, TextField } from "@mui/material";
 import { Authority } from "./../authority.interface";
-import { getById } from "./../AuthoritiesService";
-import { useParams } from 'react-router-dom';
-import { getDatabase, push, ref, set, remove } from "firebase/database";
+import { useNavigate, useParams } from "react-router-dom";
+import { useNotify } from "react-admin";
+import { Roles } from "../roles.interface";
+import { create, getAll, getById, removeById, update } from "./../AuthoritiesService";
 
-
-const db = getDatabase();
+interface SelectType {
+  value: string;
+  label: string;
+}
 
 const Input = ({ formik, name, label, ...otherProps }) => {
-
   const { errors, touched } = formik;
   const fieldError = touched[name] && Boolean(errors[name]);
 
@@ -39,7 +41,6 @@ const Input = ({ formik, name, label, ...otherProps }) => {
         }
         onChange={formik.handleChange}
         value={formik.values && formik.values[name]}
-        inputProps={{ maxLength: 14 }}
         error={fieldError}
         helperText={touched && touched[name] && errors && errors[name]}
       />
@@ -51,53 +52,93 @@ const EXCEED_CHARACTERS = "O campo não deve exceder 255 caracteres";
 const FIELD_REQUIRED = "Campo obrigatório.";
 
 export const AuthoritiesForm = () => {
-  const [data, setData] = React.useState<any>({});
+  const navigate = useNavigate();
+  const [authority, setAuthority] = React.useState<Authority>({
+    id: "",
+    status: "",
+    whatsAppOn: false,
+    name: "",
+    displayName: "",
+    phoneNumber: "",
+    email: "",
+    chairPerson: "",
+    chainPersonCellNumber: "",
+    city: "",
+    party: "",
+    cellNumber: "",
+    role: "",
+    country: "BRASIL",
+    state: "",
+  } as Authority);
+  const [roles, setRoles] = React.useState<SelectType[] | []>([]);
+
+  const notify = useNotify();
   const { id } = useParams();
-  var [authority, setAuthority] = React.useState<Authority>({} as Authority);
   const [loading, setLoading] = React.useState(true);
-  var status = 'Atualizar';
-  var hidden = '';
 
-  function deleteUser() {
-    remove(ref(db, 'authorities/' + id));
-    console.log(id);
+  async function deleteUser() {
+    removeById("authorities", id)
+      .then(() => {
+        notify("Autoridade Removida com sucesso", {
+          autoHideDuration: 2000,
+        });
+        navigate("/authorities");
+      })
+      .catch((error) => {
+        console.error(error);
+
+        notify("Erro ao remover Autoridade", {
+          autoHideDuration: 2000,
+        });
+      });
   }
-  
+
+  function convertToPersonList(
+    data: Record<string, Omit<Roles, "id">>
+  ): Roles[] {
+    return Object.entries(data).map(([id, dataRole]) => ({
+      id,
+      ...dataRole,
+    }));
+  }
+
+  async function fetchRoles() {
+    setLoading(true);
+    const response = await getAll<Roles>("roles");
+
+    if (!response) {
+      return;
+    }
+
+    const convertedRoles = convertToPersonList(response);
+
+    const rolesData: SelectType[] = convertedRoles
+      .sort((a, b) => a.order - b.order)
+      .map((role) => ({
+        label: role.name,
+        value: role.type,
+      }));
+
+    setRoles(rolesData);
+    setLoading(false);
+  }
+
+  async function fetchAuthority() {
+    setLoading(true);
+    const response = await getById("authorities", id || "");
+    setAuthority(response as Authority);
+    setLoading(false);
+  }
+
   React.useEffect(() => {
-    const fetchRows = async () => {
-      setLoading(true);
-      const response = await getById("authorities", id || "");
-      setAuthority(response as Authority);
-      setLoading(false);
-    };
-    fetchRows();
-  }, []);
-
-  if(id == undefined){
-    status = 'Cadastrar';
-    
-    authority = {
-      id: '',
-      status: '',
-      whatsAppOn: false,
-      name: '',
-      displayName: '',
-      phoneNumber: '',
-      email: '',
-      chairPerson: '',
-      chainPersonCellNumber: '',
-      city: '',
-      party: '',
-      cellNumber: '',
-      role: '',
-      country: "BRASIL",
-      state: '',
-    };
-  }
-
+    if (id) {
+      fetchAuthority();
+    }
+    fetchRoles();
+  }, [id]);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required(FIELD_REQUIRED).max(255),
+    name: Yup.string().required(FIELD_REQUIRED),
     displayName: Yup.string()
       .required(FIELD_REQUIRED)
       .max(255, EXCEED_CHARACTERS),
@@ -114,16 +155,16 @@ export const AuthoritiesForm = () => {
     role: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
     phoneNumber: Yup.string()
       .required(FIELD_REQUIRED)
-      .max(255, EXCEED_CHARACTERS),
+      .matches(/^\(\d{2}\)\s9?[0-9]{8}$/, "Telefone inválido"),
     chainPersonCellNumber: Yup.string()
       .required(FIELD_REQUIRED)
-      .max(255, EXCEED_CHARACTERS),
+      .matches(/^\(\d{2}\)\s9?[0-9]{8}$/, "Telefone inválido"),
     cellNumber: Yup.string()
       .required(FIELD_REQUIRED)
-      .max(255, EXCEED_CHARACTERS),
+      .matches(/^\(\d{2}\)\s9?[0-9]{8}$/, "Telefone inválido"),
   });
 
-  var formik = useFormik({
+  let formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: authority?.name,
@@ -141,8 +182,8 @@ export const AuthoritiesForm = () => {
     },
     validationSchema,
     onSubmit: (data) => {
-      if(id == undefined){
-        push(ref(db, 'authorities/'),{
+      if (id == undefined) {
+        create<Omit<Authority, "id">>('authorities', { 
           cellNumber: data.cellNumber,
           chairPerson: data.chairPerson,
           chainPersonCellNumber: data.chainPersonCellNumber,
@@ -156,47 +197,51 @@ export const AuthoritiesForm = () => {
           state: data.state,
           role: data.role,
           status: "ELEITO",
-          whatsAppOn: false
-        });
+          whatsAppOn: false,
+        })
+      } else {
+        update<Omit<Authority, "id">>("authorities", id, {
+          cellNumber: data.cellNumber,
+          chairPerson: data.chairPerson,
+          chainPersonCellNumber: data.chainPersonCellNumber,
+          city: data.city,
+          country: data.country,
+          displayName: data.displayName,
+          email: data.email,
+          name: data.name,
+          party: data.party,
+          phoneNumber: data.phoneNumber,
+          state: data.state,
+          role: data.role,
+          status: "ELEITO",
+          whatsAppOn: false,
+        })
+          .then(() => {
+            notify("Autoridade atualizada com sucesso", {
+              autoHideDuration: 2000,
+            });
 
-      }else{
-        set(ref(db, 'authorities/' + id), {
-          cellNumber: data.cellNumber,
-          chairPerson: data.chairPerson,
-          chainPersonCellNumber: data.chainPersonCellNumber,
-          city: data.city,
-          country: data.country,
-          displayName: data.displayName,
-          email: data.email,
-          name: data.name,
-          party: data.party,
-          phoneNumber: data.phoneNumber,
-          state: data.state,
-          role: data.role,
-          status: "ELEITO",
-          whatsAppOn: false
-        })
-        .then(() => {
-  
-          // Data saved successfully!
-        })
-        .catch((error) => {
-  
-          // The write failed...
-        });
+            navigate("/authorities");
+          })
+          .catch((error) => {
+            console.error(error);
+
+            notify("Erro ao atualizar Autoridade", {
+              autoHideDuration: 2000,
+            });
+          });
       }
     },
   });
-  const params = new URLSearchParams(window.location.pathname);
 
   return (
     <Box
       sx={{
+        paddingTop: 1,
         paddingBottom: 1,
         display: "flex",
         flexWrap: "wrap",
         "& .MuiTextField-root": { m: 1 },
-        "& input": { "&:focus": { border: "none" } },
       }}
     >
       <form onSubmit={formik.handleSubmit}>
@@ -243,27 +288,34 @@ export const AuthoritiesForm = () => {
           label={"País"}
           required
           disabled
-        />{" "}
+        />
         <Input formik={formik} name="party" label={"Partido"} required />
         <PhoneInput
           label={"N° celular da Autoridade"}
           name="cellNumber"
           formik={formik}
         />
-        <Input
-          formik={formik}
+        <InputSelect
           name="role"
           label={"Cargo da autoridade"}
-          required
+          options={roles}
+          formik={formik}
         />
-        <button type="submit" className="btn btn-primary">
-          {status}
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {id ? "Atualizar" : "Criar"}
         </button>
-        <button type="button" onClick={deleteUser} className="btn btn-danger" >
-          deletar
-        </button>
+        {id && (
+          <button
+            type="button"
+            onClick={deleteUser}
+            className="btn btn-danger"
+            disabled={loading}
+            style={{ marginLeft: 10 }}
+          >
+            deletar
+          </button>
+        )}
       </form>
     </Box>
   );
-
 };

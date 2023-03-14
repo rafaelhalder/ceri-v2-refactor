@@ -6,8 +6,26 @@ import {
   get,
   set,
   push,
+  remove
 } from "firebase/database";
 import { database } from "../../core/utils/firebase-connect";
+
+export async function getAll<T>(path: string): Promise<Record<string, Omit<T, "id">>> {
+  try {
+    const databaseRef = ref(database, path);
+    const snapshot = await get(databaseRef);
+  
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar tipos de Cargos de Autoridade do Realtime Database:", error);
+    return null;
+  }
+}
 
 export async function getList<T>(
   path: string,
@@ -42,16 +60,14 @@ export async function getById<T>(path: string, id: string): Promise<T | null> {
 
 export async function create<T>(
   path: string,
-  payload: T & { id: string }
+  payload: T
 ): Promise<T | null> {
   try {
     const dataRef = ref(database, path);
 
-    const newItem = push(dataRef);
+    push(dataRef, payload);
 
-    payload.id = newItem.key;
-
-    await set(dataRef, payload);
+    return Promise.resolve(payload);
   } catch (error) {
     console.error("Erro ao cadastrar dados do Realtime Database:", error);
     return null;
@@ -60,14 +76,24 @@ export async function create<T>(
 
 export async function update<T>(
   path: string,
-  payload: T & { id: string }
+  id: string,
+  payload: T
 ): Promise<void> {
   try {
-    const dataRef = ref(database, `${path}/${payload.id}`);
+    const dataRef = ref(database, `${path}/${id}`);
 
     return set(dataRef, payload);
   } catch (error) {
     console.error("Erro ao editar dados do Realtime Database:", error);
+    return null;
+  }
+}
+
+export async function removeById(path: string, id: string) {
+  try {
+    remove(ref(database, `${path}/${id}`));
+  } catch (error) {
+    console.error("Erro ao excluir dados do Realtime Database:", error);
     return null;
   }
 }
