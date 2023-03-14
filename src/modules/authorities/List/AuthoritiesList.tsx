@@ -4,8 +4,10 @@ import { getList } from "../AuthoritiesService";
 import { Authority } from "../authority.interface";
 import { DataGrid } from "@mui/x-data-grid";
 import ImageEye from "@mui/icons-material/RemoveRedEye";
+import AddIcon from "@mui/icons-material/Add";
 import ContentCreate from "@mui/icons-material/Create";
 import { Link } from "react-router-dom";
+import { Fab } from "@mui/material";
 
 const PAGE_SIZE = 10;
 
@@ -16,15 +18,14 @@ interface CustomActionColumn {
 const CustomActionsColumn = ({ authority }: CustomActionColumn) => {
   return (
     <>
-      <Link to={`/authorities/show/${authority.id}`}>
+      <Link
+        to={`/authorities/show/${authority.id}`}
+        style={{ paddingRight: 10 }}
+      >
         <ImageEye />
       </Link>
 
       <Link to={`/authorities/edit/${authority.id}`}>
-        <ContentCreate />
-      </Link>
-
-      <Link to={`/authorities/create`}>
         <ContentCreate />
       </Link>
     </>
@@ -51,7 +52,7 @@ const columns = [
     headerName: "Ações",
     sortable: false,
     width: 150,
-    renderCell: (authority) => <CustomActionsColumn authority={authority}/>,
+    renderCell: (authority) => <CustomActionsColumn authority={authority} />,
   },
 ];
 
@@ -62,7 +63,9 @@ const AuthoritiesList = ({ title = "Autoridades" }) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [authorities, setAuthorities] = React.useState<Authority[] | []>([]);
 
-  function convertToPersonList(data: Record<string, Omit<Authority, 'id'>>): Authority[] {
+  function convertToPersonList(
+    data: Record<string, Omit<Authority, "id">>
+  ): Authority[] {
     return Object.entries(data).map(([id, personData]) => ({
       id,
       ...personData,
@@ -96,6 +99,13 @@ const AuthoritiesList = ({ title = "Autoridades" }) => {
           rowCount={totalRows}
           loading={loading}
         />
+      </div>
+      <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
+        <Link to={'/authorities/create'}>
+          <Fab color="primary" aria-label="criar">
+            <AddIcon />
+          </Fab>
+        </Link>
       </div>
     </div>
   );
