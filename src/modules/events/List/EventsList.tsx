@@ -16,15 +16,15 @@ interface CustomActionColumn {
 const CustomActionsColumn = ({ event }: CustomActionColumn) => {
   return (
     <>
-      <Link to={`/event/show/${event.id}`}>
+      <Link to={`/events/show/${event.id}`}>
         <ImageEye />
       </Link>
 
-      <Link to={`/event/edit/${event.id}`}>
+      <Link to={`/events/edit/${event.id}`}>
         <ContentCreate />
       </Link>
 
-      <Link to={`/event/create`}>
+      <Link to={`/events/create`}>
         <ContentCreate />
       </Link>
     </>
@@ -33,7 +33,7 @@ const CustomActionsColumn = ({ event }: CustomActionColumn) => {
 
 const columns = [
   { field: "dateTime", headerName: "Nome da Autoridade", width: 90 },
-  { field: "disabled", headerName: "Nome de exib111ição", width: 150 },
+  { field: "disabled", headerName: "Nome de exibição", width: 150 },
   { field: "local", headerName: "Email", width: 250 },
   { field: "title", headerName: "Telefone da Autoridade", width: 150 },
   {

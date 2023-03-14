@@ -34,7 +34,7 @@ export const EventsShow = () => {
       <CardContent>
         <Typography className={styles.title}>{event.dateTime}</Typography>
 
-        <Typography className={styles.info}>Nome de exib11ição</Typography>
+        <Typography className={styles.info}>Nome de exibição</Typography>
         <Typography className={styles.data}>{event.disabled}</Typography>
 
         <Typography className={styles.info}>E-mail</Typography>
