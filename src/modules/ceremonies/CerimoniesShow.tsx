@@ -4,6 +4,7 @@ import { titleCase } from '../../core/utils/title-case';
 import { exporterSinglePDFFull } from './ceremonies-list-exportes';
 
 const TituloField = (props) => {
+  console.log(props);
   return <span>{titleCase(props.titulo)}</span>;
 };
 

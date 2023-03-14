@@ -13,10 +13,18 @@ import EventList from "./modules/ceremonies/CeremoniesList";
 import { EventShow } from "./modules/ceremonies/CerimoniesShow";
 import LabelIcon from "@mui/icons-material/Label";
 import { Route } from "react-router-dom";
+
 import { AuthoritiesShow } from "./modules/authorities/Show/AuthoritiesShow";
 import AuthoritiesList from "./modules/authorities/List/AuthoritiesList";
 import { AuthoritiesForm } from "./modules/authorities/Form/AuthoritiesForm";
 import { AuthoritiesCreate } from "./modules/authorities/Create/AuthoritiesCreate";
+
+import { EventsShow } from "./modules/events/Show/EventsShow";
+import EventsList from "./modules/events/List/EventsList";
+import { EventsForm } from "./modules/events/Form/EventsForm";
+import { EventsCreate } from "./modules/events/Create/EventsCreate";
+
+
 import selfDataProvider from "./core/providers/selfDataProvider";
 
 const options = { logging: true, rootRef: "/" };
@@ -49,6 +57,11 @@ const App = () => {
         <Route path="/authorities/create" element={<AuthoritiesCreate />} />
         <Route path="/authorities/show/:id" element={<AuthoritiesShow />} />
         <Route path="/authorities/edit/:id" element={<AuthoritiesForm />} />
+        
+        <Route path="/events" element={<EventsList />} />
+        <Route path="/events/create" element={<EventsCreate />} />
+        <Route path="/events/show/:id" element={<EventsShow />} />
+        <Route path="/events/edit/:id" element={<EventsForm />} />
       </CustomRoutes>
     </Admin>
   );
