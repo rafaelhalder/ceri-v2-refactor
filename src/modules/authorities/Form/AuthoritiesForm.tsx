@@ -154,12 +154,8 @@ export const AuthoritiesForm = () => {
     party: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
     role: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
     cellNumber: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
-    phoneNumber: Yup.string()
-      .required(FIELD_REQUIRED)
-      .matches(/^\(\d{2}\)\s9?[0-9]{8}$/, "Telefone inválido"),
-    chainPersonCellNumber: Yup.string()
-      .required(FIELD_REQUIRED)
-      .matches(/^\(\d{2}\)\s9?[0-9]{8}$/, "Telefone inválido"),
+    phoneNumber: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
+    chainPersonCellNumber: Yup.string().required(FIELD_REQUIRED).max(255, EXCEED_CHARACTERS),
   });
 
   let formik = useFormik({
@@ -255,12 +251,7 @@ export const AuthoritiesForm = () => {
           label={"Nome de exibição"}
           required
         />
-        <PhoneInput
-          label={"Telefone da Autoridade"}
-          name="phoneNumber"
-          isHomePhone={true}
-          formik={formik}
-        />
+        <Input formik={formik} name="phoneNumber" label={"Telefone da Autoridade"} required />
         <Input formik={formik} name="email" label={"E-mail"} required />
         <Input
           formik={formik}
@@ -268,12 +259,7 @@ export const AuthoritiesForm = () => {
           label={"Presidente"}
           required
         />
-        <PhoneInput
-          label={"N° celular do presidente"}
-          name="chainPersonCellNumber"
-          formik={formik}
-          required
-        />
+        <Input formik={formik} name="chainPersonCellNumber" label={"N° celular do presidente"} required />
         <Input formik={formik} name="city" label={"Cidade"} required />
         <InputSelect
           name="state"
