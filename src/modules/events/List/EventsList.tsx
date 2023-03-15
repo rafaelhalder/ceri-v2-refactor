@@ -61,7 +61,7 @@ const EventsList = () => {
       const response = convertToPersonList(await getList<Event>("events", 50));
       setEvents(response.map((value) => ({
         ...value,
-        disabled: value.disabled ? 'Desabilitado' : 'Habilitado',
+        disabled: value.disabled ? 'Encerrado' : 'Habilitado',
       })));
       setTotalRows(response.length);
       setLoading(false);

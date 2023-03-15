@@ -45,6 +45,7 @@ const columns = [
   { field: "country", headerName: "País", width: 100 },
   { field: "party", headerName: "Partido", width: 60 },
   { field: "state", headerName: "Estado", width: 100 },
+  { field: "disabled", headerName: "Status da Autoridade", width: 150 },
   {
     field: "actions",
     headerName: "Ações",
@@ -70,8 +71,15 @@ const AuthoritiesList = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const response = await getList<Authority>("authorities", 999999)
-    setAuthorities(convertToPersonList(response));
+    const response = convertToPersonList(
+      await getList<Authority>("authorities", 999999)
+    );
+    setAuthorities(
+      response.map((value) => ({
+        ...value,
+        disabled: value.disabled ? "Inativa" : "Ativa",
+      }))
+    );
     setLoading(false);
   };
 
@@ -83,7 +91,7 @@ const AuthoritiesList = () => {
     <div>
       <Title title="Lista de Autoridades" />
       <div style={{ height: 631, width: "100%", marginTop: 20 }}>
-      <DataGrid
+        <DataGrid
           loading={loading}
           columns={columns}
           rows={authorities}
@@ -97,7 +105,7 @@ const AuthoritiesList = () => {
         />
       </div>
       <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
-        <Link to={'/authorities/create'}>
+        <Link to={"/authorities/create"}>
           <Fab color="primary" aria-label="criar">
             <AddIcon />
           </Fab>

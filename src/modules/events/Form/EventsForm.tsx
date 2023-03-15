@@ -159,7 +159,7 @@ export const EventsForm = () => {
               }}
             />
           }
-          label={`Evento ${eventDisabled ? "Habilitado" : "Desabilitado"}`}
+          label={`Evento ${eventDisabled ? "Habilitado" : "Encerrado"}`}
         />
 
         <button type="submit" className="btn btn-primary" disabled={loading}>
