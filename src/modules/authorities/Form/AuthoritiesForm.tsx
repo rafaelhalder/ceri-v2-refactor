@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { statesConstant } from "./States.constant";
 import { InputSelect } from "../../../components/InputSelect/InputSelect";
-import { Box, FormControl, TextField } from "@mui/material";
+import { Box, FormControlLabel, Switch } from "@mui/material";
 import { Authority } from "./../authority.interface";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react-admin";
@@ -22,6 +22,7 @@ const FIELD_REQUIRED = "Campo obrigatório.";
 export const AuthoritiesForm = () => {
   const navigate = useNavigate();
   const notify = useNotify();
+  const [authorityDisabled, setAuthorityDisabled] = React.useState<boolean>(false);
   const { id } = useParams();
   const [authority, setAuthority] = React.useState<Authority>({
     id: "",
@@ -141,6 +142,7 @@ export const AuthoritiesForm = () => {
       role: authority?.role,
       country: "BRASIL",
       state: authority?.state,
+      disabled: authority?.disabled
     },
     validationSchema,
     onSubmit: (data) => {
@@ -160,6 +162,7 @@ export const AuthoritiesForm = () => {
           role: data.role,
           status: "ELEITO",
           whatsAppOn: false,
+          disabled: authorityDisabled
         })
         .then(() => {
           notify("Autoridade criada com sucesso", {
@@ -191,6 +194,7 @@ export const AuthoritiesForm = () => {
           role: data.role,
           status: "ELEITO",
           whatsAppOn: false,
+          disabled: authorityDisabled
         })
           .then(() => {
             notify("Autoridade atualizada com sucesso", {
@@ -263,6 +267,18 @@ export const AuthoritiesForm = () => {
           label={"Cargo da autoridade"}
           options={roles}
           formik={formik}
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              name="disabled"
+              checked={!authorityDisabled}
+              onChange={() => {
+                setAuthorityDisabled(!authorityDisabled);
+              }}
+            />
+          }
+          label={`Autoridade ${authorityDisabled ? "Inativa" : "Ativa"}`}
         />
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {id ? "Atualizar" : "Criar"}

@@ -19,6 +19,7 @@ interface CellNumber {
     state: string;
     status: string;
     whatsAppOn: boolean;
+    disabled: boolean | string;
   }
   
   export interface Authority extends CellNumber, ChairPerson, ContactInformation {
