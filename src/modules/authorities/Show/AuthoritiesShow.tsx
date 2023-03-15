@@ -71,6 +71,9 @@ export const AuthoritiesShow = () => {
 
         <Typography className={styles.info}>Cargo da autoridade</Typography>
         <Typography className={styles.data}>{authority.role}</Typography>
+
+        <Typography className={styles.info}>Status da Autoridade</Typography>
+        <Typography className={styles.data}>{authority.disabled ? 'Inativa' : 'Ativa'}</Typography>
       </CardContent>
     </Card>
   );

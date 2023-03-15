@@ -44,6 +44,9 @@ export const EventsShow = () => {
 
         <Typography className={styles.info}>Presidente</Typography>
         <Typography className={styles.data}>{event.title}</Typography>
+
+        <Typography className={styles.info}>Status do evento</Typography>
+        <Typography className={styles.data}>{event.disabled ? 'Encerrado' : 'Habilitado'}</Typography>
       </CardContent>
     </Card>
   );
